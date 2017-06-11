@@ -17,32 +17,50 @@ mypage_html = ("mypage.html",  makeHTML "mypage" mypage)
 
 --
 
+start = bodybase
+  `addElem` header
+  `addElem` doorBox
 
-start = ELEM {
-               body = (makeBody "body") `addTAG` [div_header,(makeDoorBox "./e.gif")],
-               css = [styleBody, styleHeader] ++ styleDoorBoxList
-             }
+lounge = bodybase
+   `addElem` header
+   `addElem` loungeDoorBox
 
-lounge = ELEM {
-    body = (makeBody "body") `addTAG` [div_header, makelaungeDoorBox "./e,gif"],
-    css = [styleBody, styleHeader] ++ styleLoungeDoorBoxList
-  }
+tutorial = bodybase
+ `addElem` header
+ `addElem` description
 
-tutorial = ELEM {
-  body = (makeBody "body") `addTAG` [div_header, link_description],
-  css =  [styleBody, styleHeader, styleDescription]
+mypage = bodybase
+  `addElem` header
+  `addElem` ((wrapper { css = [styleWrapper ["wrapper"] "row" [p_margin_left "10px", p_margin_right "10px"]]})
+        `addElem` blog
+        `addElem` menu
+      )
+
+bodybase = ELEM {
+  body = makeBody "body",
+  css =  [styleBody]
 }
 
-mypage = ELEM {
-  body = (makeBody "body")
-        `addTAG` [div_header]
-        `addTAG` [makeDiv "wrapper"
-            `addTAG` [div_blog]
-            `addTAG` [div_menu]] ,
-  css = [styleBody,styleHeader,styleMenu]
-    ++ [styleWrapper ["wrapper"] "row" [p_margin_left "10px", p_margin_right "10px"]]
-    ++ styleBlogs ++ styleProfiles ++ [styleLink]
-  }
+header = ELEM {
+  body = div_header,
+  css = [styleHeader]
+}
+
+doorBox = ELEM {
+  body = makeDoorBox "./e.gif",
+  css =  styleDoorBoxList
+}
+
+loungeDoorBox = ELEM {
+  body = makelaungeDoorBox "./e,gif",
+  css = styleLoungeDoorBoxList
+
+}
+
+wrapper = ELEM {
+  body = makeDiv "wrapper",
+  css = []
+}
 
 
 -- body
@@ -55,13 +73,36 @@ makeDoorBox imgname = makeDiv "doorBox" `addTAG` [link, title] where
 makelaungeDoorBox imgname = makeDiv "doorBox" `addTAG` [link] where
   link = makeImageLink "./tutorial.html" imgname "doorlink"
 
+
+blog = ELEM {
+  body = div_blog,
+  css = styleBlogs
+}
+
+menu = ELEM {
+  body = makeDiv "menu" ,
+  css = [styleMenu]
+}
+  `addElem` profile
+  `addElem` ELEM { body = link_agora, css = []}
+
+profile = ELEM {
+  body = div_profile,
+  css = styleProfiles
+}
+
+description = ELEM {
+  body = link_description,
+  css = [styleDescription]
+}
+
+
 div_blog = makeDiv "blog"
   `addTAG` [makeDiv "blogTitle" `addTAG` [Text "Think"]]
   `addTAG` [makeDiv "blogTextInput" `addTAG` [_textarea "input" [] []]]
   `addTAG` [makeDiv "blogButtons" `addTAG` [postbutton]] where
     postbutton =(makeButton "blogpost" "blogform" "button") `addText` "regist"
 
-div_menu =  makeDiv "menu" `addTAG` [div_profile, link_agora]
 
 div_profile = makeDiv "profile" `addTAG` [image_profile] where
   image_profile = makeImage "./e.gif" "imageprofile"

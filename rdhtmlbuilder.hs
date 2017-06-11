@@ -27,6 +27,8 @@ data ELEM = ELEM {body::TAG, css::[STYLE]}
 
 makeTAG tagName = TAG tagName "" [] []
 addClassName (TAG t c as ts) cn = TAG t cn as ts
+
+addElem :: ELEM -> ELEM -> ELEM
 addElem elem1 elem2 = ELEM {
       body = (body elem1) `addTAG` [body elem2],
       css = (css elem1) ++ (css elem2)
