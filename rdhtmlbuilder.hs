@@ -13,8 +13,8 @@ type PropertyName = String
 
 -- main function
 
-makeHTML::[(FileName, TAG)] -> IO [()]
-makeHTML inputs = sequence $ map (\(filename,html) -> (writeFile filename (display html))) inputs
+makeHTMLs::[(FileName, TAG)] -> IO [()]
+makeHTMLs inputs = sequence $ map (\(filename,html) -> (writeFile filename (display html))) inputs
 
 -- main data type
 
@@ -23,8 +23,14 @@ data ATTRIBUTE = Attribute AttributeName String deriving Show
 data STYLE = STYLECLASS [ClassName] [PROPERTY] | STYLETAG TagName [PROPERTY] | STYLEEMPTY
 data PROPERTY = Property PropertyName String deriving Show
 
+data ELEM = ELEM {body::TAG, css::[STYLE]}
+
 makeTAG tagName = TAG tagName "" [] []
 addClassName (TAG t c as ts) cn = TAG t cn as ts
+addElem elem1 elem2 = ELEM {
+      body = (body elem1) `addTAG` [body elem2],
+      css = (css elem1) ++ (css elem2)
+  }
 
 -- main class
 class DISPLAY a where

@@ -3,21 +3,20 @@ import RDHTMLBuilder_TAG
 
 
 -- main = print "hello"
-main = makeHTML inputs
+main = makeHTMLs inputs
 
 --- cutomize
 
 inputs = [start_html, lounge_html, tutorial_html, mypage_html]
 
 --
-start_html = ("start.html",  html "start" (css start) (body start))
-lounge_html = ("lounge.html",  html "lounge" (css lounge) (body lounge))
-tutorial_html = ("tutorial.html",  html "tutorial" (css tutorial) (body tutorial))
-mypage_html = ("mypage.html",  html "mypage" (css mypage) (body mypage))
+start_html = ("start.html",  makeHTML "start" start)
+lounge_html = ("lounge.html",  makeHTML "lounge" lounge)
+tutorial_html = ("tutorial.html",  makeHTML "tutorial" tutorial)
+mypage_html = ("mypage.html",  makeHTML "mypage" mypage)
 
 --
 
-data ELEM = ELEM {body::TAG, css::[STYLE]}
 
 start = ELEM {
                body = (makeBody "body") `addTAG` [div_header,(makeDoorBox "./e.gif")],

@@ -57,6 +57,7 @@ p_margin_left = Property "margin-left"
 p_margin_right = Property "margin-right"
 p_flex_direction = Property "flex-direction"
 
+makeHTML className elem = html className (css elem) (body elem)
 
 makeStyleFullScreenBody::[String] -> [PROPERTY] ->  STYLE
 makeStyleFullScreenBody classNames props = STYLECLASS classNames (makeWH "100%" "100%" ++ props)
