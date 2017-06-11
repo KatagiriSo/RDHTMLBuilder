@@ -7,13 +7,21 @@ main = makeHTMLs inputs
 
 --- cutomize
 
-inputs = [start_html, lounge_html, tutorial_html, mypage_html]
+inputs = [start_html,
+          lounge_html,
+          tutorial_html,
+          mypage_html,
+          agora_html,
+          other_html
+          ]
 
 -- setting
 start_html = ("start.html",  makeHTML "start" start)
 lounge_html = ("lounge.html",  makeHTML "lounge" lounge)
 tutorial_html = ("tutorial.html",  makeHTML "tutorial" tutorial)
 mypage_html = ("mypage.html",  makeHTML "mypage" mypage)
+agora_html = ("agora.html", makeHTML "agora" agora)
+other_html = ("other.html", makeHTML "other" other)
 
 -- page
 
@@ -34,7 +42,40 @@ mypage = bodybase
   `addElem` ((wrapper { css = [styleWrapper ["wrapper"] "row" [p_margin_left "10px", p_margin_right "10px"]]})
         `addElem` blog
         `addElem` menu
+      ) where
+        blog = ELEM {
+          body = makeDiv "blog",
+          css = [styleBlog]
+        }
+         `addElem` blogTitle
+         `addElem` blogTextInput
+         `addElem` (blogButtons `addElem` postButton)
+
+agora = bodybase
+  `addElem` (header `addElem` ELEM { body = link_mypage, css = [styleLink]})
+  `addElem` (table
+      `addElem` makeAbstract "hmm"
+      `addElem` makeAbstract "fuga"
+      `addElem` makeAbstract "abcdeg..."
+      `addElem` makeAbstract "what?"
+      `addElem` makeAbstract "how"
+      `addElem` makeAbstract "how1"
+      `addElem` makeAbstract "how2"
       )
+
+other = bodybase
+  `addElem` header
+  `addElem` ((wrapper { css = [styleWrapper ["wrapper"] "row" [p_margin_left "10px", p_margin_right "10px"]]})
+        `addElem` blog
+        `addElem` menu
+        ) where
+          blog = ELEM {
+            body = makeDiv "blog",
+            css = [styleBlog]
+          }
+           `addElem` blogTitle
+           `addElem` blogTextInput
+           `addElem` (blogButtons `addElem` readButton)
 
 -- elem parts
 
@@ -64,13 +105,7 @@ wrapper = ELEM {
   css = []
 }
 
-blog = ELEM {
-  body = makeDiv "blog",
-  css = [styleBlog]
-}
- `addElem` blogTitle
- `addElem` blogTextInput
- `addElem` blogButtons
+
 
 menu = ELEM {
   body = makeDiv "menu" ,
@@ -87,6 +122,22 @@ profile = ELEM {
 description = ELEM {
   body = link_description,
   css = [styleDescription]
+}
+
+table = ELEM {
+  body = makeDiv "table",
+  css = [STYLECLASS ["table"] (
+      makeFlex "row"
+      ++ [Property "flex-wrap" "wrap"]
+      ++ makeWH "100%" "100%")]
+}
+
+makeAbstract txt = ELEM {
+  body = (makeA "./other.html" "abstract") `addTAG` [makeDiv "abstract" `addText` txt],
+  css = [STYLECLASS ["abstract"] (makeWH "300px" "300px"
+        ++ [p_background_color "yellow"]
+        ++ [p_margin_left "5px"]
+        )]
 }
 
 -- body
@@ -111,13 +162,19 @@ blogTextInput = ELEM {
 }
 
 blogButtons = ELEM {
-  body = makeDiv "blogButtons" `addTAG` [postbutton],
+  body = makeDiv "blogButtons",
   css = [styleBlogButtons]
-} where {
-  postbutton =(makeButton "blogpost" "blogform" "button") `addText` "regist"
 }
 
+postButton = ELEM {
+  body = (makeButton "blogpost" "blogform" "button") `addText` "regist",
+  css = []
+}
 
+readButton = ELEM {
+  body = (makeButton "blogpost" "blogform" "button") `addText` "read",
+  css = []
+}
 
 
 div_profile = makeDiv "profile" `addTAG` [image_profile] where
@@ -125,6 +182,7 @@ div_profile = makeDiv "profile" `addTAG` [image_profile] where
 
 link_description = makeA "./mypage.html" "descriptionlink" `addText` "tutorial"
 link_agora = makeA "./agora.html" "link" `addText` "list"
+link_mypage = makeA "./mypage.html" "link" `addText` "mypage"
 
 -- css
 
