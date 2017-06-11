@@ -90,13 +90,15 @@ header = ELEM {
 }
 
 doorBox = ELEM {
-  body = makeDoorBox "./e.gif",
-  css =  styleDoorBoxList
+  body = makeDoorBox "./e.png",
+  css =  styleDoorBoxList ++ [STYLECLASS ["doorlink_image"]
+                                  ([Property "object-fit" "contain"] ++ makeWH "100px" "100px")
+                                 ]
 }
 
 loungeDoorBox = ELEM {
-  body = makelaungeDoorBox "./e,gif",
-  css = styleLoungeDoorBoxList
+  body = makelaungeDoorBox "./e.png",
+  css = styleLoungeDoorBoxList ++ [STYLECLASS ["doorlink_image"] [Property "object-fit" "contain"]]
 
 }
 
@@ -178,7 +180,7 @@ readButton = ELEM {
 
 
 div_profile = makeDiv "profile" `addTAG` [image_profile] where
-  image_profile = makeImage "./e.gif" "imageprofile"
+  image_profile = makeImage "./e.png" "imageprofile"
 
 link_description = makeA "./mypage.html" "descriptionlink" `addText` "tutorial"
 link_agora = makeA "./agora.html" "link" `addText` "list"
