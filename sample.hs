@@ -9,13 +9,13 @@ main = makeHTMLs inputs
 
 inputs = [start_html, lounge_html, tutorial_html, mypage_html]
 
---
+-- setting
 start_html = ("start.html",  makeHTML "start" start)
 lounge_html = ("lounge.html",  makeHTML "lounge" lounge)
 tutorial_html = ("tutorial.html",  makeHTML "tutorial" tutorial)
 mypage_html = ("mypage.html",  makeHTML "mypage" mypage)
 
---
+-- page
 
 start = bodybase
   `addElem` header
@@ -35,6 +35,8 @@ mypage = bodybase
         `addElem` blog
         `addElem` menu
       )
+
+-- elem parts
 
 bodybase = ELEM {
   body = makeBody "body",
@@ -62,22 +64,13 @@ wrapper = ELEM {
   css = []
 }
 
-
--- body
-
-div_header = makeDiv "header"
-makeDoorBox imgname = makeDiv "doorBox" `addTAG` [link, title] where
-  link = makeImageLink "./lounge.html" imgname "doorlink"
-  title = makeDiv "title" `addTAG` [Text "blog"]
-
-makelaungeDoorBox imgname = makeDiv "doorBox" `addTAG` [link] where
-  link = makeImageLink "./tutorial.html" imgname "doorlink"
-
-
 blog = ELEM {
-  body = div_blog,
-  css = styleBlogs
+  body = makeDiv "blog",
+  css = [styleBlog]
 }
+ `addElem` blogTitle
+ `addElem` blogTextInput
+ `addElem` blogButtons
 
 menu = ELEM {
   body = makeDiv "menu" ,
@@ -96,12 +89,35 @@ description = ELEM {
   css = [styleDescription]
 }
 
+-- body
 
-div_blog = makeDiv "blog"
-  `addTAG` [makeDiv "blogTitle" `addTAG` [Text "Think"]]
-  `addTAG` [makeDiv "blogTextInput" `addTAG` [_textarea "input" [] []]]
-  `addTAG` [makeDiv "blogButtons" `addTAG` [postbutton]] where
-    postbutton =(makeButton "blogpost" "blogform" "button") `addText` "regist"
+div_header = makeDiv "header"
+makeDoorBox imgname = makeDiv "doorBox" `addTAG` [link, title] where
+  link = makeImageLink "./lounge.html" imgname "doorlink"
+  title = makeDiv "title" `addTAG` [Text "blog"]
+
+makelaungeDoorBox imgname = makeDiv "doorBox" `addTAG` [link] where
+  link = makeImageLink "./tutorial.html" imgname "doorlink"
+
+
+blogTitle = ELEM {
+  body = makeDiv "blogTitle" `addTAG` [Text "Think"],
+  css =  [styleBlogTitle]
+}
+
+blogTextInput = ELEM {
+  body = makeDiv "blogTextInput" `addTAG` [_textarea "input" [] []],
+  css = styleBlogTextInputs
+}
+
+blogButtons = ELEM {
+  body = makeDiv "blogButtons" `addTAG` [postbutton],
+  css = [styleBlogButtons]
+} where {
+  postbutton =(makeButton "blogpost" "blogform" "button") `addText` "regist"
+}
+
+
 
 
 div_profile = makeDiv "profile" `addTAG` [image_profile] where
@@ -112,52 +128,59 @@ link_agora = makeA "./agora.html" "link" `addText` "list"
 
 -- css
 
-styleBody = makeStyleFullScreenBody ["body"] (
-  [p_background_color "green"]++(makeFlex "column")
-  )
+styleBody = makeStyleFullScreenBody ["body"] ([p_background_color "green"] ++ (makeFlex "column"))
 
 styleWrapper classNames flex props = STYLECLASS classNames ((makeFlex flex) ++ (makeWH "100%" "100%") ++ props)
 
-styleHeader = STYLECLASS [getClassName div_header]
-  (makeWH "100%" "100px")
+styleHeader = STYLECLASS [getClassName div_header] (makeWH "100%" "100px")
+
+-- door
 
 styleDoorBoxList = [styleDoorBox, (styleDoorLink "200px" "200px"), styleTitle]
+
 styleLoungeDoorBoxList = [styleDoorBox, (styleDoorLink "300px" "300px")]
 
 styleDoorBox = STYLECLASS [getClassName (makeDoorBox "")] (makeWH "100%" "calc(100% - 100px)")
  `addPROPERTY` [p_text_align "center"]
 
-propBorder = makeBorder "thick" "solid" "white" "10px"
-
 styleDoorLink width height = STYLECLASS [getClassName (makeDoorBox ""), "doorlink"]  (makeWH width height)
- `addPROPERTY` [p_display style_display_INLINE_BLOCK]
- `addPROPERTY` makeFontSize "1.5rem" "coral"
- `addPROPERTY` propBorder
+  `addPROPERTY` [p_display style_display_INLINE_BLOCK]
+  `addPROPERTY` makeFontSize "1.5rem" "coral"
+  `addPROPERTY` propBorder
 
 styleTitle = STYLECLASS [getClassName (makeDoorBox ""), "title"] (makeFontSize "3.0rem" "white")
- `addPROPERTY` [p_margin_top "30px"]
+  `addPROPERTY` [p_margin_top "30px"]
 
+-- const
+propBorder = makeBorder "thick" "solid" "white" "10px"
+styleLink = STYLECLASS ["link:link"] (makeFontSize "1.0rem" "white")
+
+-- description
 styleDescription = STYLECLASS ["descriptionlink"] (makeWH "80%" "80%")
   `addPROPERTY` makeFontSize "10rem" "coral"
 
-styleLink = STYLECLASS ["link:link"] (makeFontSize "1.0rem" "white")
+-- blog
 
-styleBlogs = [styleBlog, styleBlogTitle] ++ styleBlogTextInputs ++ [styleBlogButtons] where
-  styleBlog = STYLECLASS ["blog"] (makeWH "calc(80%)" "100%")
+styleBlog = STYLECLASS ["blog"] (makeWH "calc(80%)" "100%")
     `addPROPERTY` [p_margin_left "5px"]
     `addPROPERTY` [p_margin_right "5px"]
     `addPROPERTY` propBorder
-  styleBlogTitle = STYLECLASS ["blogTitle"] (makeWH "100%" "50px")
+
+styleBlogTitle = STYLECLASS ["blogTitle"] (makeWH "100%" "50px")
     `addPROPERTY` (makeFontSize "2.0rem" "white")
     `addPROPERTY` [p_background_color "pink"]
-  styleBlogTextInputs = [STYLECLASS ["blogTextInput"] (makeWH "100%" "calc(100% - 100px)")
+
+styleBlogTextInputs = [STYLECLASS ["blogTextInput"] (makeWH "100%" "calc(100% - 100px)")
                           `addPROPERTY` [p_background_color "red"],
                          STYLECLASS ["input"] (makeWH "100%" "100%")
                           `addPROPERTY` makeFontSize "1.5rem" "white"
                           `addPROPERTY` [p_background_color "green"]
                          ]
-  styleBlogButtons = STYLECLASS ["blogButtons"] (makeFlex "row" ++ makeWH "100%" "50px" ++ [p_background_color "pink"])
 
+styleBlogButtons = STYLECLASS ["blogButtons"] (makeFlex "row" ++ makeWH "100%" "50px" ++ [p_background_color "pink"])
+
+
+-- menu
 
 styleMenu = STYLECLASS ["menu"] (makeWH "calc(20% - 10px)" "100%")
   `addPROPERTY` [p_margin_left "5px"]
@@ -166,6 +189,7 @@ styleMenu = STYLECLASS ["menu"] (makeWH "calc(20% - 10px)" "100%")
   `addPROPERTY` makeFlex "column"
 
 
+-- profile
 styleProfiles = [styleProfile, imageprofile] where
   styleProfile = STYLECLASS ["profile"] (makeWH "100px" "100px")
   imageprofile = STYLECLASS ["imageprofile"] (makeWH "100%" "100%")
